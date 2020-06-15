@@ -5,11 +5,14 @@ import { Request, ExecutionResult } from '../src/Interfaces';
 describe('visitData', () => {
   it('should visit', async () => {
     const schema = buildSchema(`
+      interface TestInterface {
+        field: String
+      }
       type Test {
         field: String
       }
       type Query {
-        test: Test
+        test: TestInterface
       }
     `);
 
@@ -25,6 +28,7 @@ describe('visitData', () => {
     const result: ExecutionResult = {
       data: {
         test: {
+          __typename: 'Test',
           field: 'test',
         },
       },

@@ -8,8 +8,9 @@ import {
   FieldNode,
   GraphQLOutputType,
   isListType,
-  isObjectType,
   getNullableType,
+  isCompositeType,
+  isAbstractType,
 } from 'graphql';
 
 import { Request, GraphQLExecutionContext } from './Interfaces';
@@ -62,11 +63,14 @@ function visitField(
   const nullableType = getNullableType(returnType);
   if (isListType(nullableType)) {
     return (field as Array<any>).map(listMember => visitField(listMember, nullableType, fieldNodes, exeContext));
-  } else if (isObjectType(nullableType)) {
-    const collectedFields = collectSubfields(exeContext, nullableType, fieldNodes);
+  } else if (isCompositeType(nullableType)) {
+    const finalType = isAbstractType(nullableType)
+      ? (exeContext.schema.getType(field.__typename) as GraphQLObjectType)
+      : nullableType;
+    const collectedFields = collectSubfields(exeContext, finalType, fieldNodes);
     Object.keys(collectedFields).forEach(responseKey => {
       const subfieldNodes = collectedFields[responseKey];
-      const type = nullableType.getFields()[subfieldNodes[0].name.value].type;
+      const type = finalType.getFields()[subfieldNodes[0].name.value].type;
       field[responseKey] = visitField(field[responseKey], type, subfieldNodes, exeContext);
     });
     return field;
