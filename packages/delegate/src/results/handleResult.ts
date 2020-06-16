@@ -1,12 +1,6 @@
-import {
-  GraphQLResolveInfo,
-  getNullableType,
-  isCompositeType,
-  isLeafType,
-  isListType,
-  GraphQLError,
-  GraphQLSchema,
-} from 'graphql';
+import { GraphQLResolveInfo, getNullableType, isCompositeType, isLeafType, isListType, GraphQLSchema } from 'graphql';
+
+import { RelativeGraphQLError } from '@graphql-tools/utils';
 
 import { SubschemaConfig } from '../types';
 
@@ -16,7 +10,7 @@ import { handleList } from './handleList';
 
 export function handleResult(
   result: any,
-  errors: ReadonlyArray<GraphQLError>,
+  errors: Array<RelativeGraphQLError>,
   subschema: GraphQLSchema | SubschemaConfig,
   context: Record<string, any>,
   info: GraphQLResolveInfo,

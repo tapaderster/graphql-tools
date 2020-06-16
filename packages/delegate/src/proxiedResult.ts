@@ -1,6 +1,12 @@
-import { GraphQLError } from 'graphql';
-
-import { mergeDeep, ERROR_SYMBOL, relocatedError, setErrors, getErrors } from '@graphql-tools/utils';
+import {
+  mergeDeep,
+  ERROR_SYMBOL,
+  relocatedError,
+  setErrors,
+  getErrors,
+  sliceRelativeError,
+  RelativeGraphQLError,
+} from '@graphql-tools/utils';
 
 import { handleNull } from './results/handleNull';
 
@@ -27,7 +33,7 @@ export function unwrapResult(parent: any, path: Array<string>): any {
 
     setErrors(
       object,
-      errors.map(error => relocatedError(error, error.path != null ? error.path.slice(1) : undefined))
+      errors.map(error => sliceRelativeError(error))
     );
     setObjectSubschema(object, subschema);
 
@@ -51,15 +57,15 @@ export function dehoistResult(parent: any, delimeter = '__gqltf__'): any {
     obj[fieldName] = parent[alias];
   });
 
-  result[ERROR_SYMBOL] = parent[ERROR_SYMBOL].map((error: GraphQLError) => {
-    if (error.path != null) {
-      const path = error.path.slice();
-      const pathSegment = path.shift();
-      const expandedPathSegment: Array<string | number> = (pathSegment as string).split(delimeter);
-      return relocatedError(error, expandedPathSegment.concat(path));
-    }
-
-    return error;
+  result[ERROR_SYMBOL] = parent[ERROR_SYMBOL].map((error: RelativeGraphQLError) => {
+    const path = error.relativePath.slice();
+    const pathSegment = path.shift();
+    const expandedPathSegment: Array<string | number> = (pathSegment as string).split(delimeter);
+    return {
+      relativePath: expandedPathSegment.concat(path),
+      // setting path to null will cause issues for errors that bubble up from non nullable fields
+      graphQLError: relocatedError(error.graphQLError, null),
+    };
   });
 
   result[OBJECT_SUBSCHEMA_SYMBOL] = parent[OBJECT_SUBSCHEMA_SYMBOL];

@@ -1,7 +1,6 @@
 import {
   GraphQLList,
   GraphQLSchema,
-  GraphQLError,
   GraphQLResolveInfo,
   getNullableType,
   GraphQLType,
@@ -10,7 +9,7 @@ import {
   isListType,
 } from 'graphql';
 
-import { getErrorsByPathSegment } from '@graphql-tools/utils';
+import { getErrorsByPathSegment, RelativeGraphQLError } from '@graphql-tools/utils';
 
 import { handleNull } from './handleNull';
 import { handleObject } from './handleObject';
@@ -19,7 +18,7 @@ import { SubschemaConfig } from '../types';
 export function handleList(
   type: GraphQLList<any>,
   list: Array<any>,
-  errors: ReadonlyArray<GraphQLError>,
+  errors: Array<RelativeGraphQLError>,
   subschema: GraphQLSchema | SubschemaConfig,
   context: Record<string, any>,
   info: GraphQLResolveInfo,
@@ -43,7 +42,7 @@ export function handleList(
 function handleListMember(
   type: GraphQLType,
   listMember: any,
-  errors: ReadonlyArray<GraphQLError>,
+  errors: Array<RelativeGraphQLError>,
   subschema: GraphQLSchema | SubschemaConfig,
   context: Record<string, any>,
   info: GraphQLResolveInfo,

@@ -1,6 +1,5 @@
 import {
   GraphQLCompositeType,
-  GraphQLError,
   GraphQLSchema,
   isAbstractType,
   FieldNode,
@@ -8,7 +7,13 @@ import {
   GraphQLResolveInfo,
 } from 'graphql';
 
-import { collectFields, GraphQLExecutionContext, setErrors, slicedError } from '@graphql-tools/utils';
+import {
+  collectFields,
+  GraphQLExecutionContext,
+  setErrors,
+  RelativeGraphQLError,
+  sliceRelativeError,
+} from '@graphql-tools/utils';
 import { setObjectSubschema, isSubschemaConfig } from '../Subschema';
 import { mergeFields } from '../mergeFields';
 import { MergedTypeInfo, SubschemaConfig } from '../types';
@@ -16,7 +21,7 @@ import { MergedTypeInfo, SubschemaConfig } from '../types';
 export function handleObject(
   type: GraphQLCompositeType,
   object: any,
-  errors: ReadonlyArray<GraphQLError>,
+  errors: Array<RelativeGraphQLError>,
   subschema: GraphQLSchema | SubschemaConfig,
   context: Record<string, any>,
   info: GraphQLResolveInfo,
@@ -26,7 +31,7 @@ export function handleObject(
 
   setErrors(
     object,
-    errors.map(error => slicedError(error))
+    errors.map(error => sliceRelativeError(error))
   );
 
   setObjectSubschema(object, subschema);
