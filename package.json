@@ -1,5 +1,5 @@
 {
-  "name": "graphql-tools",
+  "name": "@stapader/graphql-tools",
   "version": "5.0.0",
   "description": "Useful tools to create and manipulate GraphQL schemas.",
   "sideEffects": false,
@@ -9,6 +9,9 @@
   "typings": "dist/index.d.ts",
   "typescript": {
     "definition": "dist/index.d.ts"
+  },
+  "publishConfig": {
+    "registry": "https://artylab.expedia.biz/api/npm/test-npm-internal-local/"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -77,7 +80,7 @@
     "eslint-watch": "6.0.1",
     "express": "4.17.1",
     "express-graphql": "0.9.0",
-    "graphql": "15.0.0",
+    "graphql": "14.6.0",
     "graphql-subscriptions": "1.1.0",
     "graphql-type-json": "0.3.1",
     "graphql-upload": "10.0.0",

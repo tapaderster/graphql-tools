@@ -57,6 +57,7 @@ export function createRequestFromInfo({
         : fieldNodes != null
         ? fieldNodes
         : info.fieldNodes,
+    operationName: info.operation.name
   });
 }
 
@@ -71,6 +72,7 @@ export function createRequest({
   targetFieldName,
   selectionSet,
   fieldNodes,
+  operationName
 }: ICreateRequest): Request {
   let argumentNodes: ReadonlyArray<ArgumentNode>;
   let newSelectionSet: SelectionSetNode = selectionSet;
@@ -143,6 +145,7 @@ export function createRequest({
       kind: Kind.SELECTION_SET,
       selections: [rootfieldNode],
     },
+    name: operationName
   };
 
   const fragmentDefinitions: Array<FragmentDefinitionNode> = Object.keys(

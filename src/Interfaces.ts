@@ -29,7 +29,7 @@ import {
   VariableDefinitionNode,
   OperationDefinitionNode,
   GraphQLError,
-  ExecutionResult as GraphQLExecutionResult,
+  ExecutionResult as GraphQLExecutionResult, NameNode,
 } from 'graphql';
 
 import { ApolloLink } from 'apollo-link';
@@ -259,6 +259,7 @@ export interface ICreateRequest {
   targetFieldName: string;
   selectionSet: SelectionSetNode;
   fieldNodes: ReadonlyArray<FieldNode>;
+  operationName: NameNode
 }
 
 export interface IDelegateRequestOptions extends IDelegateToSchemaOptions {
